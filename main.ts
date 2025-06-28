@@ -69,8 +69,6 @@ let map_1: number[][] = [
     [1, 1, 0, 0, 0],
     [1, 1, 1, 1, 1]
 ];
-
-
 let map_2: number[][] = [
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
@@ -78,10 +76,17 @@ let map_2: number[][] = [
     [0, 1, 0, 1, 0],
     [1, 0, 0, 0, 1]
 ];
+let map_3: number[][] = [
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 1, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 1, 0],
+    [1, 1, 0, 0, 1]
+];
 
 let currentMap = map_1;
 
-let maps = [map_1, map_2];
+let maps = [map_1, map_2, map_3];
 let currentIndex = 0;
 
 LoadMap(currentMap);
@@ -100,10 +105,17 @@ basic.forever(function () {
 
     if (input.buttonIsPressed(Button.A) && input.buttonIsPressed(Button.B) && onGround) {
         onGround = !onGround;
+        // Check if someone is above us or if we're too higj
         if (player_y - 2 < 0) {
-            player_y--;
+            if(player_y-- > 0){
+                if (currentMap[player_y--][player_x] != 1){
+                    player_y--;
+                }
+            }
         } else {
-            player_y -= 2;
+            if (currentMap[player_y - 2][player_x] != 1 && currentMap[player_y--][player_x] != 1) {
+                player_y-=2;
+            }
         }
     } else if (input.buttonIsPressed(Button.B) && player_x < 4) {
         player_x++;
