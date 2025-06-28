@@ -15,6 +15,15 @@ function LoadMap(map: number[][]) {
         }
     }
 }
+
+function ClearMap(){
+    for (let y = 0; y < 5; y++) {
+        for (let x = 0; x < 5; x++) {
+            led.unplot(x, y);
+        }
+    }
+}
+
 function UpdatePlayer(px: number, py: number, map: number[][]) {
     // Clear current location
     led.unplot(px, py);
@@ -30,6 +39,10 @@ function UpdatePlayer(px: number, py: number, map: number[][]) {
         if (heldFrames > hangFrames) {
             heldFrames = 0;
             py++;
+        }
+        if(py > 3){
+            py = 0;
+            px = 0;
         }
     } else if (map[py][px] == 1) {
         onGround = false;
@@ -53,11 +66,23 @@ let map_1: number[][] = [
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
     [1, 0, 0, 0, 1],
-    [1, 1, 0, 0, 1],
+    [1, 1, 0, 0, 0],
     [1, 1, 1, 1, 1]
 ];
 
+
+let map_2: number[][] = [
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 1, 0, 1, 0],
+    [1, 0, 0, 0, 1]
+];
+
 let currentMap = map_1;
+
+let maps = [map_1, map_2];
+let currentIndex = 0;
 
 LoadMap(currentMap);
 
@@ -80,10 +105,22 @@ basic.forever(function () {
         } else {
             player_y -= 2;
         }
-    } else if (input.buttonIsPressed(Button.B) && player_x < 5) {
+    } else if (input.buttonIsPressed(Button.B) && player_x < 4) {
         player_x++;
     } else if (input.buttonIsPressed(Button.A) && player_x > 0) {
         player_x--;
+    }
+
+    if(player_x > 3){
+        // Next map
+        if(currentIndex < maps.length - 1){
+            currentIndex++;
+            // Clear screen
+            ClearMap();
+            currentMap = maps[currentIndex];
+            player_x = 0;
+            player_y = 0;
+        }
     }
 
     UpdatePlayer(player_x, player_y, currentMap);
